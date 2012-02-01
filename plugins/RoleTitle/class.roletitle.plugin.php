@@ -17,6 +17,12 @@ $PluginInfo['RoleTitle'] = array(
 );
 
 class RoleTitlePlugin extends Gdn_Plugin {
+    static $TitleDescriptions = array(
+        'FoxyShop' => 'Developer of the FoxyShop WordPress plugin',
+        'FoxyPress' => 'Developer of the FoxyPress WordPress plugin',
+        'Consolibyte Quickbooks' => 'Developer of the Consolibyte Quickbooks plugin',
+        'Integration Developer' => 'Our awesome FoxyCart developers who have made full integrations.'
+    );
    /**
     * Inject the roles under the username on comments.
     */
@@ -32,7 +38,15 @@ class RoleTitlePlugin extends Gdn_Plugin {
       if (!$Roles)
          return;
 
-      echo '<span class="RoleTitle">'.implode(', ', $Roles).'</span> ';
+      $RolesTags = array();
+      foreach ($Roles as $RawRole) {
+         $CssClass = 'Role_'.str_replace(' ','_', Gdn_Format::AlphaNumeric($RawRole));
+         $Title = self::$TitleDescriptions[$RawRole];
+         $TitleAttr = ($Title ? " title='$Title'" : "");
+         array_push($RolesTags, "<span class='{$CssClass}'{$TitleAttr}>$RawRole</span>");
+      }
+
+      echo '<span class="RoleTitle">'.implode($RolesTags, '').'</span> ';
    }
 
    /**
