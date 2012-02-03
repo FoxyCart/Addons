@@ -93,7 +93,7 @@ class NBBCPlugin extends Gdn_Plugin {
             return $String;
          }
          else {
-            return $Formatter->FormatCode(htmlspecialchars_decode($String), $Lang);
+            return $Formatter->FormatCode($String, $Lang);
          }
    }
 
@@ -101,8 +101,11 @@ class NBBCPlugin extends Gdn_Plugin {
       if ($action == BBCODE_CHECK)
          return true;
 
+      $UnformattedContent = str_replace("<br />", "", $content);
+      $UnformattedContent = htmlspecialchars_decode($UnformattedContent);
+
       $Lang =  ($params['lang'] ? $params['lang'] : "html4strict");
-      return $this->FormatCode($content, $Lang);
+      return $this->FormatCode($UnformattedContent, $Lang);
    }
    
    protected $_NBBC = NULL;
@@ -124,6 +127,7 @@ class NBBCPlugin extends Gdn_Plugin {
              'after_endtag' => "sns",
              'plain_start' => "\n<b>Code:</b>\n",
              'plain_end' => "\n",
+             'raw_content' => true
          ));
 
          $BBCode->AddRule('quote',
