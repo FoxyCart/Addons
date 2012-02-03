@@ -8,6 +8,8 @@ $PluginInfo['GeSHiSyntaxHighlighter'] = array(
    'AuthorUrl' => 'http://bavotasan.com/'
 );
 
+Gdn::FactoryInstall('CodeSyntaxFormatter', 'GeSHiSyntaxHighlighterPlugin', __FILE__, Gdn::FactorySingleton);
+
 class GeSHiSyntaxHighlighterPlugin extends Gdn_Plugin {
 
 	public function Base_Render_Before($Sender) {
@@ -78,7 +80,12 @@ jQuery(document).ready(function(){
 	public function Setup()  {
 		// Nothing to do here!
 	}
+
+    public function FormatCode($String, $Lang) {
+        return pre_entities(array("", $Lang, "", "", $String));
+    }
 }		
+
 function ParseSyntax($String) {
 	$String = preg_replace_callback("/\s*<pre(?:lang=[\"']([\w-]+)[\"']|line=[\"'](\d*)[\"']|escaped=[\"'](true|false)?[\"']|\s)+>(.*)<\/pre>\s*/siU",'pre_entities', $String);
 	return $String;

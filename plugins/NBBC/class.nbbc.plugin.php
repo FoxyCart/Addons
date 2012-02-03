@@ -86,6 +86,24 @@ class NBBCPlugin extends Gdn_Plugin {
       $Result = $this->NBBC()->Parse($String);
       return $Result;
    }
+
+   public function FormatCode($String, $Lang) {
+         $Formatter = Gdn::Factory('CodeSyntaxFormatter');
+         if (is_null($Formatter)) {
+            return $String;
+         }
+         else {
+            return $Formatter->FormatCode(htmlspecialchars_decode($String), $Lang);
+         }
+   }
+
+   function DoCode($bbcode, $action, $name, $default, $params, $content) {
+      if ($action == BBCODE_CHECK)
+         return true;
+
+      $Lang =  ($params['lang'] ? $params['lang'] : "html4strict");
+      return $this->FormatCode($content, $Lang);
+   }
    
    protected $_NBBC = NULL;
    public function NBBC() {
@@ -97,12 +115,9 @@ class NBBCPlugin extends Gdn_Plugin {
 
 
          $BBCode->AddRule('code',
-         Array(
-             'mode' => BBCODE_MODE_ENHANCED,
-             'template' => "\n<pre>{\$_content/v}\n</pre>\n",
-             'class' => 'code',
+         array('mode' => BBCODE_MODE_CALLBACK,
+             'method' => array($this, "DoCode"),
              'allow_in' => Array('listitem', 'block', 'columns'),
-             'content' => BBCODE_VERBATIM,
              'before_tag' => "sns",
              'after_tag' => "sn",
              'before_endtag' => "sn",
