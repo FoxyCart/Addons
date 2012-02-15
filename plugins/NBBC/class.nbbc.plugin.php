@@ -127,7 +127,7 @@ class NBBCPlugin extends Gdn_Plugin {
              'after_endtag' => "sns",
              'plain_start' => "\n<b>Code:</b>\n",
              'plain_end' => "\n",
-             'raw_content' => true
+             'content' => BBCODE_VERBATIM
          ));
 
          $BBCode->AddRule('quote',
